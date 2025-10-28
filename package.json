@@ -1,0 +1,26 @@
+{
+  "name": "strkit",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf dist",
+    "dev": "ts-node --transpile-only src/index.ts",
+    "start": "node dist/index.js",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": ["string", "utility", "typescript", "library", "strkit", "text", "snakecase", "camelcase", "kebabcase", "pascalcase", "capitalize", "truncate", "replace", "remove", "insert", "substring", "split", "join"],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^24.9.1",
+    "typescript": "^5.9.3",
+    "ts-node": "^10.9.1",
+    "rimraf": "^5.0.0"
+  }
+}
