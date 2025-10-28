@@ -14,7 +14,11 @@
     "test": "echo \"No tests specified\" && exit 0"
   },
   "keywords": ["string", "utility", "typescript", "library", "strkit", "text", "snakecase", "camelcase", "kebabcase", "pascalcase", "capitalize", "truncate", "replace", "remove", "insert", "substring", "split", "join"],
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lkphuong/strkit.git"
+  },
+  "author": "phuonglk",
   "license": "ISC",
   "description": "",
   "devDependencies": {
