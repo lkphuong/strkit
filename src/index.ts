@@ -651,3 +651,148 @@ export function upperFirst(str: string): string {
   return str.substring(0, 1).toUpperCase() + str.substring(1);
 }
 //#endregion
+
+//#region toSnakeCase
+/**
+ * Recursively converts the keys of an object or elements of an array to snake_case.
+ *
+ * This function traverses the input value, which can be an object, array, or primitive,
+ * and converts all object keys to snake_case format. It handles nested objects and arrays
+ * by applying the conversion recursively. Primitive values (strings, numbers, booleans, etc.)
+ * are returned unchanged.
+ *
+ * If the input is `null` or `undefined`, it is returned as is. Date objects are also preserved
+ * without modification.
+ *
+ * @param {any} value - The input value to convert (object, array, or primitive).
+ * @returns {any} - A new value with all object keys converted to snake_case.
+ *
+ * @example
+ * toSnakeCase({ firstName: "John", lastName: "Doe" });
+ * // { first_name: "John", last_name: "Doe" }
+ *
+ * toSnakeCase([{ userName: "jdoe" }, { userName: "asmith" }]);
+ * // [{ user_name: "jdoe" }, { user_name: "asmith" }]
+ *
+ * toSnakeCase({
+ *   userDetails: {
+ *     firstName: "Jane",
+ *     addressList: [
+ *       { streetName: "Main St", zipCode: "12345" }
+ *     ]
+ *   }
+ * });
+ * */
+export function toSnakeCase(value: any): any {
+  if (value === null || value === undefined || typeof value !== "object") {
+    return value;
+  }
+
+  if (value instanceof Date) {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(toSnakeCase);
+  }
+
+  return Object.keys(value).reduce((acc, key) => {
+    const snakeKey = key.replace(/([A-Z])/g, "_$1").toLowerCase();
+
+    acc[snakeKey] = toSnakeCase(value[key]);
+
+    return acc;
+  }, {} as Record<string, any>);
+}
+
+//#endregion
+
+//#region
+/**
+ * A simple implementation of sprintf-style string formatting.
+ *
+ * This function replaces format specifiers in the input string with corresponding
+ * argument values. It supports the following specifiers:
+ * - `%s`: String
+ * - `%d`: Number (integer or float)
+ * - `%v`: Any value (converted to string)
+ *
+ * The function processes the format string and replaces each specifier with the
+ * next argument provided. If there are more specifiers than arguments, the remaining
+ * specifiers are left unchanged.
+ *
+ * @param {string} format - The format string containing specifiers.
+ * @param {...any} args - The values to replace the specifiers in the format string.
+ * @returns {string} - The formatted string with specifiers replaced by argument values.
+ *
+ * @example
+ * sprintf("Hello, %s!", "World");          // "Hello, World!"
+ * sprintf("You have %d new messages.", 5); // "You have 5 new messages."
+ * sprintf("Value: %v", { key: "value" });  // "Value: [object Object]"
+ */
+export function sprintf(format: string, ...args: any[]): string {
+  let i = 0;
+
+  return format.replace(/%[sdv]/g, (_) => String(args[i++]));
+}
+//#endregion
+
+//#region convertKeysWithBoth
+/**
+ * Recursively converts the keys of an object or elements of an array to both snake_case and camelCase.
+ *
+ * This function traverses the input value, which can be an object, array, or primitive,
+ * and for each object key, it creates three versions: the original key, a snake_case version,
+ * and a camelCase version. It handles nested objects and arrays by applying the conversion recursively.
+ * Primitive values (strings, numbers, booleans, etc.) are returned unchanged.
+ *
+ * If the input is `null` or `undefined`, it is returned as is. Date objects are also preserved
+ * without modification.
+ *
+ * @param {T | T[]} obj - The input value to convert (object, array, or primitive).
+ * @returns {any} - A new value with all object keys converted to both snake_case and camelCase.
+ *
+ * @example
+ * convertKeysWithBoth({ firstName: "John", lastName: "Doe" });
+ * // {
+ * //   firstName: "John",
+ * //   first_name: "John",
+ * //   FirstName: "John",
+ * //   lastName: "Doe",
+ * //   last_name: "Doe",
+ * //   LastName: "Doe"
+ * // }
+ */
+export function convertKeysWithBoth<T>(obj: T | T[]): any {
+  if (Array.isArray(obj)) {
+    return obj.map(convertKeysWithBoth);
+  } else if (obj !== null && typeof obj === "object") {
+    const source = obj as any;
+    return Object.keys(source).reduce((acc, key) => {
+      const camelKey = key.replace(/_([a-z])/g, (_: string, letter: string) =>
+        letter.toUpperCase()
+      );
+      const snakeKey = key.replace(/([A-Z])/g, "_$1").toLowerCase();
+
+      const value = source[key];
+
+      acc[key] = value;
+      acc[snakeKey] = value;
+      acc[camelKey] = value;
+
+      if (
+        value !== null &&
+        typeof value === "object" &&
+        !(value instanceof Date)
+      ) {
+        const converted = convertKeysWithBoth(value);
+        acc[key] = converted;
+        acc[camelKey] = converted;
+      }
+
+      return acc;
+    }, {} as Record<string, any>);
+  }
+  return obj;
+}
+//#endregion
