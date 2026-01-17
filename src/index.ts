@@ -152,7 +152,7 @@ const deburrMap = new Map<string, string>(
     Ŧ: "T",
     ŧ: "t",
     ſ: "s",
-  })
+  }),
 );
 /**
  * Removes diacritical marks (accents) and converts special Latin characters
@@ -512,7 +512,7 @@ export function trimEnd(str: string, chars?: string | string[]): string {
     case "string": {
       if (chars.length !== 1) {
         throw new Error(
-          `The 'chars' parameter should be a single character string.`
+          `The 'chars' parameter should be a single character string.`,
         );
       }
 
@@ -696,13 +696,76 @@ export function toSnakeCase(value: any): any {
     return value.map(toSnakeCase);
   }
 
-  return Object.keys(value).reduce((acc, key) => {
-    const snakeKey = key.replace(/([A-Z])/g, "_$1").toLowerCase();
+  return Object.keys(value).reduce(
+    (acc, key) => {
+      const snakeKey = key.replace(/([A-Z])/g, "_$1").toLowerCase();
 
-    acc[snakeKey] = toSnakeCase(value[key]);
+      acc[snakeKey] = toSnakeCase(value[key]);
 
-    return acc;
-  }, {} as Record<string, any>);
+      return acc;
+    },
+    {} as Record<string, any>,
+  );
+}
+
+//#endregion
+
+//#region toCamelCase
+/**
+ * Recursively converts the keys of an object or elements of an array to camelCase.
+ *
+ * This function traverses the input value, which can be an object, array, or primitive,
+ * and converts all object keys to camelCase format. It handles nested objects and arrays
+ * by applying the conversion recursively. Primitive values (strings, numbers, booleans, etc.)
+ * are returned unchanged.
+ *
+ * If the input is `null` or `undefined`, it is returned as is. Date objects are also preserved
+ * without modification.
+ *
+ * @param {any} value - The input value to convert (object, array, or primitive).
+ * @returns {any} - A new value with all object keys converted to camelCase.
+ *
+ * @example
+ * toCamelCase({ first_name: "John", last_name: "Doe" });
+ * // { firstName: "John", lastName: "Doe" }
+ *
+ * toCamelCase([{ user_name: "jdoe" }, { user_name: "asmith" }]);
+ * // [{ userName: "jdoe" }, { userName: "asmith" }]
+ *
+ * toCamelCase({
+ *   user_details: {
+ *     first_name: "Jane",
+ *     address_list: [
+ *       { street_name: "Main St", zip_code: "12345" }
+ *     ]
+ *   }
+ * });
+ * */
+export function toCamelCase(value: any): any {
+  if (value === null || value === undefined || typeof value !== "object") {
+    return value;
+  }
+
+  if (value instanceof Date) {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(toCamelCase);
+  }
+
+  return Object.keys(value).reduce(
+    (acc, key) => {
+      const camelKey = key.replace(/_([a-z])/g, (_: string, letter: string) =>
+        letter.toUpperCase(),
+      );
+
+      acc[camelKey] = toCamelCase(value[key]);
+
+      return acc;
+    },
+    {} as Record<string, any>,
+  );
 }
 
 //#endregion
@@ -768,30 +831,33 @@ export function convertKeysWithBoth<T>(obj: T | T[]): any {
     return obj.map(convertKeysWithBoth);
   } else if (obj !== null && typeof obj === "object") {
     const source = obj as any;
-    return Object.keys(source).reduce((acc, key) => {
-      const camelKey = key.replace(/_([a-z])/g, (_: string, letter: string) =>
-        letter.toUpperCase()
-      );
-      const snakeKey = key.replace(/([A-Z])/g, "_$1").toLowerCase();
+    return Object.keys(source).reduce(
+      (acc, key) => {
+        const camelKey = key.replace(/_([a-z])/g, (_: string, letter: string) =>
+          letter.toUpperCase(),
+        );
+        const snakeKey = key.replace(/([A-Z])/g, "_$1").toLowerCase();
 
-      const value = source[key];
+        const value = source[key];
 
-      acc[key] = value;
-      acc[snakeKey] = value;
-      acc[camelKey] = value;
+        acc[key] = value;
+        acc[snakeKey] = value;
+        acc[camelKey] = value;
 
-      if (
-        value !== null &&
-        typeof value === "object" &&
-        !(value instanceof Date)
-      ) {
-        const converted = convertKeysWithBoth(value);
-        acc[key] = converted;
-        acc[camelKey] = converted;
-      }
+        if (
+          value !== null &&
+          typeof value === "object" &&
+          !(value instanceof Date)
+        ) {
+          const converted = convertKeysWithBoth(value);
+          acc[key] = converted;
+          acc[camelKey] = converted;
+        }
 
-      return acc;
-    }, {} as Record<string, any>);
+        return acc;
+      },
+      {} as Record<string, any>,
+    );
   }
   return obj;
 }
