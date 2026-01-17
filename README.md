@@ -1,10 +1,10 @@
-# StrKit
+# strkit-lib
 
 [![npm version](https://img.shields.io/npm/v/strkit-lib.svg)](https://www.npmjs.com/package/strkit-lib)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9+-blue.svg)](https://www.typescriptlang.org/)
 
-A comprehensive, zero-dependency TypeScript string utilities library designed for modern applications. **StrKit** provides a complete suite of string transformations, case converters, and advanced utilities with full TypeScript type safety and Unicode support.
+A comprehensive, zero-dependency TypeScript string utilities library designed for modern applications. **strkit-lib** provides a complete suite of string transformations, case converters, and advanced utilities with full TypeScript type safety and Unicode support.
 
 ## ✨ Features
 
