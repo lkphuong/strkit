@@ -1,6 +1,6 @@
 {
   "name": "strkit-lib",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -13,7 +13,27 @@
     "start": "node dist/index.js",
     "test": "echo \"No tests specified\" && exit 0"
   },
-  "keywords": ["string", "utility", "typescript", "library", "strkit-lib", "text", "snakecase", "camelcase", "kebabcase", "pascalcase", "capitalize", "truncate", "replace", "remove", "insert", "substring", "split", "join", "sprintf"],
+  "keywords": [
+    "string",
+    "utility",
+    "typescript",
+    "library",
+    "strkit-lib",
+    "text",
+    "snakecase",
+    "camelcase",
+    "kebabcase",
+    "pascalcase",
+    "capitalize",
+    "truncate",
+    "replace",
+    "remove",
+    "insert",
+    "substring",
+    "split",
+    "join",
+    "sprintf"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/lkphuong/strkit.git"
